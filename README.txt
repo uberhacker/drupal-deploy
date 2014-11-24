@@ -1,6 +1,6 @@
 Motivation:
 
-Testing Drupal sites locally can take some time to set up manually.  This script is an attempt to automate the set up process so testing can be accelerated.  The main premise is to reuse an existing site configurations for testing different repositories and/or feature branches.
+Testing Drupal sites locally can take some time to set up manually.  This script is an attempt to automate the set up process so testing can be accelerated.  The main premise is to reuse existing site configurations for testing different repositories and/or feature branches.
 
 Preconditions:
 
@@ -24,10 +24,11 @@ Installation using Acquia Dev Desktop 2:
  2) Launch terminal
  3) cd /path/to/project/directory
  4) git clone https://user@site/project/repo.git (eg. git clone https://username@bitbucket.org/my-project.git)
+    or install Drupal manually instead of cloning a git repo
  5) Launch Acquia Dev Desktop
  6) Click the + sign in the lower left corner
  7) Choose Import local Drupal site...
- 8) Click Change... and browse to /path/to/project/directory/my-project (where my-project is Drupal root of the cloned repo above)
+ 8) Click Change... and browse to /path/to/project/directory/my-project (where my-project is Drupal root as installed in step 4 above)
  9) Under Use PHP:, select the appropriate PHP version
 10) Verify the New database name: is correct
 11) Click OK
