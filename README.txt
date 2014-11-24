@@ -24,7 +24,6 @@ Installation using Acquia Dev Desktop 2:
  2) Launch terminal
  3) cd /path/to/project/directory
  4) git clone https://user@site/project/repo.git (eg. git clone https://username@bitbucket.org/my-project.git)
-    or install Drupal manually instead of cloning a git repo
  5) Launch Acquia Dev Desktop
  6) Click the + sign in the lower left corner
  7) Choose Import local Drupal site...
@@ -48,3 +47,7 @@ Usage:
 $ cd /path/to/project/directory/my-project where my-project is the Drupal root
 $ drupal-deploy-config.sh - Follow the prompts to configure a deployment profile
 $ drupal-deploy.sh - See examples in the Usage: section
+
+Tips:
+
+After running drupal-deploy.sh inside an existing git repo location, type cd . to restore the directory.
