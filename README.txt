@@ -10,6 +10,7 @@ Preconditions:
 5) An Apache vhost must be configured to include the deployment path
 6) A localhost line must exist in /etc/hosts (eg. 127.0.0.1 deploy.local)
 7) A MySQL database with proper user grants must exist
+8) Access to a git repository containing a Drupal installation
 
 General Installation:
 
