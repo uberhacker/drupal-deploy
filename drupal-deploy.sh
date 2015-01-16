@@ -104,7 +104,7 @@ if test $1; then
     else
       dburl="mysql://$username@$host:$port/$dbname"
     fi
-    drush site-install $install --account-pass="$admin" --db-url=$dburl --site-name="$sitename" -y
+    drush site-install $install --account-pass="$admin" --db-url=$dburl --site-name="$sitename" -v -y
   else
     # Restore settings.php if no install profile
     settings=$HOME/$prof.settings.php
@@ -137,7 +137,21 @@ if test $1; then
     # drush en custom_developer_deployment -y
   fi
   # drush rsync @site.prod:%files/ @site.local:%files
-  echo "Browse to http://$prof.local:$apache"
+  # Discover possible vhosts configurations
+  domain=$prof.local
+  root=$(drush status root --format=list)
+  vhosts=/Applications/DevDesktop/apache/conf/vhosts.conf
+  if [ -f $vhosts ]; then
+    server=$(grep -1 $root $vhosts | head -1)
+    domain=${server#"  ServerName "}
+  else
+    vhosts=/Applications/MAMP/conf/apache/vhosts.conf
+    if [ -f $vhosts ]; then
+      server=$(grep -1 $root $vhosts | head -1)
+      domain=${server#"  ServerName "}
+    fi
+  fi
+  echo "Browse to http://$domain:$apache"
 else
   echo "Usage:"
   echo "drupal-deploy.sh <deploy profile> [feature branch] [install profile]"
