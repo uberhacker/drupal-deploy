@@ -115,18 +115,25 @@ if test $1; then
     cp -f $settings sites/default/settings.php
   fi
   if [ "$modules" != "" ]; then
+    if [[ $modules == *"devel_themer"* ]]; then
+      # The devel_themer contrib module depends on simplehtmldom
+      # Download the latest version just in case newer versions of devel_themer require it
+      cd sites/all/libraries
+      if [ ! -d "simplehtmldom" ]; then
+        mkdir simplehtmldom
+      fi
+      cd simplehtmldom
+      if [ ! -f "simple_html_dom.php" ]; then
+        curl -L -O http://downloads.sourceforge.net/project/simplehtmldom/simple_html_dom.php
+        echo "Downloaded simple_html_dom.php to $(pwd)"
+      fi
+      cd $directory
+      # Download the older version which, as of the date of this script, is required by devel_themer
+      drush dl simplehtmldom-7.x-1.12
+      drush en simplehtmldom -y
+    fi
     drush dl $modules
     drush en $modules -y
-    cd sites/all/libraries
-    if [ ! -d "simplehtmldom" ]; then
-      mkdir simplehtmldom
-    fi
-    cd simplehtmldom
-    if [ ! -f "simple_html_dom.php" ]; then
-      curl -L -O http://downloads.sourceforge.net/project/simplehtmldom/simple_html_dom.php
-      echo "Downloaded simple_html_dom.php to $(pwd)"
-    fi
-    cd $directory
     # drush en custom_developer_deployment -y
   fi
   # drush rsync @site.prod:%files/ @site.local:%files
