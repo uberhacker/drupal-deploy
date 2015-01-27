@@ -86,6 +86,9 @@ if test $1; then
       if [ "$1" == "admin" ]; then
         admin=${line#"$1="}
       fi
+      if [ "$1" == "multisite" ]; then
+        multisite=${line#"$1="}
+      fi
     done
   done < $config
   cd
@@ -104,7 +107,11 @@ if test $1; then
     else
       dburl="mysql://$username@$host:$port/$dbname"
     fi
-    drush site-install $install --account-pass="$admin" --db-url=$dburl --site-name="$sitename" -v -y
+    if [ "$multisite" != "" ]; then
+      drush site-install $install --account-pass="$admin" --db-url=$dburl --site-name="$sitename" --sites-subdir=$multisite -v -y
+    else
+      drush site-install $install --account-pass="$admin" --db-url=$dburl --site-name="$sitename" -v -y
+    fi
   else
     # Restore settings.php if no install profile
     settings=$HOME/$prof.settings.php

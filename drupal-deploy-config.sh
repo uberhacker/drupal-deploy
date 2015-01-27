@@ -88,23 +88,30 @@ if [ -z "$branch" ]; then
 fi
 
 modules=""
-echo -n "Download and enable developer modules [y]: "; read dm
+echo -n "Download and enable developer modules? [y]: "; read dm
 if [ -z "$dm" ]; then
   dm=y
 fi
-if [[ $dm =~ ^[Yy]$ ]]; then
+if [ "$dm" == "Y" ]; then
+  dm=y
+fi
+if [ "$dm" == "y" ]; then
   modules="coder xhprof hacked devel_themer examples"
 fi
 
-echo -n "Set up the environment with a Drupal install profile [y]: "; read ip
+echo -n "Set up the environment with a Drupal install profile? [y]: "; read ip
 if [ -z "$ip" ]; then
+  ip=y
+fi
+if [ "$ip" == "Y" ]; then
   ip=y
 fi
 
 admin=""
 install=""
 sitename=""
-if [[ $ip =~ ^[Yy]$ ]]; then
+multisite=""
+if [ "$ip" == "y" ]; then
   # Prompt for install profile specific parameters
   echo -n "Enter the Drupal install profile [utexas]: "; read install
   if [ -z "$install" ]; then
@@ -119,6 +126,17 @@ if [[ $ip =~ ^[Yy]$ ]]; then
   echo -n "Enter the admin account password [admin]: "; read admin
   if [ -z "$admin" ]; then
     admin=admin
+  fi
+
+  echo -n "Do you wish to add a multisite domain? [y]: "; read md
+  if [ -z "$md" ]; then
+    md=y
+  fi
+  if [ "$md" == "Y" ]; then
+    md=y
+  fi
+  if [ "$md" == "y" ]; then
+    echo -n "Enter your multisite domain: "; read multisite
   fi
 else
   # No install profile requires that we restore settings.php
@@ -142,12 +160,16 @@ echo "modules=$modules" >> $profname
 echo "install=$install" >> $profname
 echo "sitename=$sitename" >> $profname
 echo "admin=$admin" >> $profname
+echo "multisite=$multisite" >> $profname
 echo "Deployment profile $profile stored in $profname"
 
-echo -n "Deploy with the settings as configured above [y]: "; read deploy
+echo -n "Deploy with the settings as configured above? [y]: "; read deploy
 if [ -z "$deploy" ]; then
   deploy=y
 fi
-if [[ $deploy =~ ^[Yy]$ ]]; then
+if [ "$deploy" == "Y" ]; then
+  deploy=y
+fi
+if [ "$deploy" == "y" ]; then
   $HOME/bin/drupal-deploy.sh $profile
 fi
