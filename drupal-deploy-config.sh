@@ -4,12 +4,29 @@
 #
 
 dir=$(pwd)
+profdir=$HOME/drupal-deploy
+if [ ! -d "$profdir" ]; then
+  mkdir $profdir
+fi
 echo -n "Enter the directory for this install [$dir]: "; read directory
 if [ -z "$directory" ]; then
   directory=$dir
 fi
 cd $directory
-connection=$(drush sql-connect) || exit
+env=default
+sites=$(find $directory/sites -type d -maxdepth 1)
+for site in $sites; do
+  settings=$site/settings.php
+  if [ -f "$settings" ]; then
+    env=$(basename $site)
+  fi
+done
+if [ "$env" == "default" ]; then
+  connection=$(drush sql-connect) || exit
+else
+  connection=$(drush -l $env sql-connect) || exit
+fi
+echo "The database credentials are from $directory/sites/$env/settings.php"
 for pair in $connection; do
   set -- $(echo $pair | tr '=' ' ')
   if [ "$1" == "--user" ]; then
@@ -141,12 +158,12 @@ if [ "$ip" == "y" ]; then
 else
   # No install profile requires that we restore settings.php
   if [ ! -f "$HOME/$profile.settings.php" ]; then
-    cp -f sites/default/settings.php $HOME/$profile.settings.php
+    cp -f sites/default/settings.php $profdir/$profile.settings.php
   fi
 fi
 
 profile=$(basename $directory)
-profname=$HOME/$profile.profile
+profname=$profdir/$profile.profile
 echo "directory=$directory" > $profname
 echo "dbname=$dbname" >> $profname
 echo "username=$username" >> $profname
@@ -171,5 +188,5 @@ if [ "$deploy" == "Y" ]; then
   deploy=y
 fi
 if [ "$deploy" == "y" ]; then
-  $HOME/bin/drupal-deploy.sh $profile
+  $(which drupal-deploy.sh) $profile
 fi
